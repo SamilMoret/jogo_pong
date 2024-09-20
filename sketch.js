@@ -3,6 +3,8 @@ let jogadorY, computadorY, bolaX, bolaY, velocidadeBolaX, velocidadeBolaY;
 let larguraRaquete = 10, alturaRaquete = 100;
 let tamanhoBola = 20;
 let alvoComputadorY;
+let espessuraBorda = 5;  // Espessura das bordas superior e inferior
+let aumentoVelocidade = 0.1;  // Valor pelo qual a velocidade da bola aumenta a cada impacto com a raquete
 
 function setup() {
   createCanvas(800, 400);
@@ -16,12 +18,13 @@ function setup() {
 function draw() {
   background(0);
 
-  // Desenhar as raquetes e a bola
+  // Desenhar as raquetes, a bola e as bordas
   desenharRaquetes();
   desenharBola();
+  desenharBordas();
   
   // Movimento da raquete do jogador (seguir o mouse)
-  jogadorY = constrain(mouseY - alturaRaquete / 2, 0, height - alturaRaquete);
+  jogadorY = constrain(mouseY - alturaRaquete / 2, espessuraBorda, height - alturaRaquete - espessuraBorda);
   
   // Movimento da bola
   bolaX += velocidadeBolaX;
@@ -36,8 +39,8 @@ function draw() {
   }
   
   // Verificar colisão da bola com as bordas superior e inferior
-  if (bolaY - tamanhoBola / 2 <= 0 || bolaY + tamanhoBola / 2 >= height) {
-    velocidadeBolaY *= -1;  // Inverter a direção Y
+  if (bolaY - tamanhoBola / 2 <= espessuraBorda || bolaY + tamanhoBola / 2 >= height - espessuraBorda) {
+    velocidadeBolaY *= -1;  // Inverter a direção Y ao colidir com as bordas
   }
   
   // Movimento simples da raquete do computador
@@ -56,18 +59,43 @@ function desenharBola() {
   ellipse(bolaX, bolaY, tamanhoBola, tamanhoBola);
 }
 
+function desenharBordas() {
+  // Desenhar a borda superior
+  rect(0, 0, width, espessuraBorda);
+  
+  // Desenhar a borda inferior
+  rect(0, height - espessuraBorda, width, espessuraBorda);
+}
+
 function verificarColisaoRaquetes() {
   // Colisão com a raquete do jogador
   if (bolaX - tamanhoBola / 2 <= 20 && bolaY >= jogadorY && bolaY <= jogadorY + alturaRaquete) {
     velocidadeBolaX *= -1;
     bolaX = 20 + tamanhoBola / 2;  // Garantir que a bola não fique presa
-    alvoComputadorY = random(0, height - alturaRaquete);  // Computador escolhe posição aleatória
+    aumentarVelocidadeBola();  // Aumenta a velocidade após o impacto
+    alvoComputadorY = random(espessuraBorda, height - alturaRaquete - espessuraBorda);  // Computador escolhe posição aleatória
   }
   
   // Colisão com a raquete do computador
   if (bolaX + tamanhoBola / 2 >= width - 20 && bolaY >= computadorY && bolaY <= computadorY + alturaRaquete) {
     velocidadeBolaX *= -1;
     bolaX = width - 20 - tamanhoBola / 2;  // Garantir que a bola não fique presa
+    aumentarVelocidadeBola();  // Aumenta a velocidade após o impacto
+  }
+}
+
+function aumentarVelocidadeBola() {
+  // Aumentar a velocidade da bola após impacto
+  if (velocidadeBolaX > 0) {
+    velocidadeBolaX += aumentoVelocidade;  // Aumentar a velocidade no eixo X
+  } else {
+    velocidadeBolaX -= aumentoVelocidade;  // Diminuir para aumentar a velocidade no eixo X negativo
+  }
+
+  if (velocidadeBolaY > 0) {
+    velocidadeBolaY += aumentoVelocidade;  // Aumentar a velocidade no eixo Y
+  } else {
+    velocidadeBolaY -= aumentoVelocidade;  // Diminuir para aumentar a velocidade no eixo Y negativo
   }
 }
 
@@ -86,44 +114,5 @@ function inteligenciaComputador() {
   }
   
   // Impedir que a raquete saia da tela
-  computadorY = constrain(computadorY, 0, height - alturaRaquete);
+  computadorY = constrain(computadorY, espessuraBorda, height - alturaRaquete - espessuraBorda);
 }
-
-class Bola {
-    constructor() {
-      this.tamanho = 20;
-      this.x = width / 2;
-      this.y = height / 2;
-      this.velocidadeX = random(3, 5) * (random() > 0.5 ? 1 : -1);
-      this.velocidadeY = random(2, 4) * (random() > 0.5 ? 1 : -1);
-    }
-  
-    desenhar() {
-      ellipse(this.x, this.y, this.tamanho, this.tamanho);
-    }
-  
-    mover() {
-      this.x += this.velocidadeX;
-      this.y += this.velocidadeY;
-    }
-  
-    verificarColisaoBordas() {
-      if (this.y - this.tamanho / 2 <= 0 || this.y + this.tamanho / 2 >= height) {
-        this.velocidadeY *= -1;  // Inverte a direção Y ao colidir com as bordas superior ou inferior
-      }
-    }
-  
-    verificarGol() {
-      if (this.x - this.tamanho / 2 <= 0 || this.x + this.tamanho / 2 >= width) {
-        this.reiniciar();  // Reinicia a bola no centro
-      }
-    }
-  
-    reiniciar() {
-      this.x = width / 2;
-      this.y = height / 2;
-      this.velocidadeX = random(3, 5) * (random() > 0.5 ? 1 : -1);
-      this.velocidadeY = random(2, 4) * (random() > 0.5 ? 1 : -1);
-    }
-  }
-  
