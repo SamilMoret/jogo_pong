@@ -4,12 +4,15 @@ let larguraRaquete = 10, alturaRaquete = 100;
 let tamanhoBola = 20;
 let alvoComputadorY;
 let espessuraBorda = 5;  // Espessura das bordas superior e inferior
-let aumentoVelocidade = 0.1;  // Valor pelo qual a velocidade da bola aumenta a cada impacto com a raquete
+let aumentoVelocidade = 0.2;  // Valor pelo qual a velocidade da bola aumenta a cada impacto com a raquete
 let fundo;  // Variável para a imagem de fundo
 
 function preload() {
   // Carregar a imagem de fundo antes do setup
   fundo = loadImage('Sprites/fundo2.png');
+  raqueteJogadorImg = loadImage('Sprites/barra02.png');
+  raqueteComputadorImg = loadImage('Sprites/barra02.png');
+  bolaImg = loadImage('Sprites/bola.png');
 }
 
 function setup() {
@@ -54,15 +57,16 @@ function draw() {
 }
 
 function desenharRaquetes() {
-  // Raquete do jogador
-  rect(10, jogadorY, larguraRaquete, alturaRaquete);
+  // Desenhar a raquete do jogador
+  image(raqueteJogadorImg, 10, jogadorY, larguraRaquete, alturaRaquete);
   
-  // Raquete do computador
-  rect(width - 20, computadorY, larguraRaquete, alturaRaquete);
+  // Desenhar a raquete do computador
+  image(raqueteComputadorImg, width - 20, computadorY, larguraRaquete, alturaRaquete);
 }
 
 function desenharBola() {
-  ellipse(bolaX, bolaY, tamanhoBola, tamanhoBola);
+  // Desenhar a bola
+  image(bolaImg, bolaX - tamanhoBola / 2, bolaY - tamanhoBola / 2, tamanhoBola, tamanhoBola);
 }
 
 function desenharBordas() {
