@@ -5,6 +5,12 @@ let tamanhoBola = 20;
 let alvoComputadorY;
 let espessuraBorda = 5;  // Espessura das bordas superior e inferior
 let aumentoVelocidade = 0.1;  // Valor pelo qual a velocidade da bola aumenta a cada impacto com a raquete
+let fundo;  // Variável para a imagem de fundo
+
+function preload() {
+  // Carregar a imagem de fundo antes do setup
+  fundo = loadImage('Sprites/fundo2.png');
+}
 
 function setup() {
   createCanvas(800, 400);
@@ -16,7 +22,7 @@ function setup() {
 }
 
 function draw() {
-  background(0);
+  background(fundo);
 
   // Desenhar as raquetes, a bola e as bordas
   desenharRaquetes();
@@ -71,6 +77,10 @@ function verificarColisaoRaquetes() {
   // Colisão com a raquete do jogador
   if (bolaX - tamanhoBola / 2 <= 20 && bolaY >= jogadorY && bolaY <= jogadorY + alturaRaquete) {
     velocidadeBolaX *= -1;
+
+    let impacto = (bolaY - jogadorY) / alturaRaquete - 0.5; // Calcula o impacto relativo
+
+    velocidadeBolaY = impacto * 6;  // Ajusta a velocidade Y com base no ponto de impacto (modifica o ângulo)
     bolaX = 20 + tamanhoBola / 2;  // Garantir que a bola não fique presa
     aumentarVelocidadeBola();  // Aumenta a velocidade após o impacto
     alvoComputadorY = random(espessuraBorda, height - alturaRaquete - espessuraBorda);  // Computador escolhe posição aleatória
@@ -79,10 +89,17 @@ function verificarColisaoRaquetes() {
   // Colisão com a raquete do computador
   if (bolaX + tamanhoBola / 2 >= width - 20 && bolaY >= computadorY && bolaY <= computadorY + alturaRaquete) {
     velocidadeBolaX *= -1;
+
+    let impacto = (bolaY - computadorY) / alturaRaquete - 0.5; // Calcula o impacto relativo
+
+    velocidadeBolaY = impacto * 6;  // Ajusta a velocidade Y com base no ponto de impacto (modifica o ângulo)
+
     bolaX = width - 20 - tamanhoBola / 2;  // Garantir que a bola não fique presa
+
     aumentarVelocidadeBola();  // Aumenta a velocidade após o impacto
   }
 }
+
 
 function aumentarVelocidadeBola() {
   // Aumentar a velocidade da bola após impacto
