@@ -4,8 +4,10 @@ let larguraRaquete = 10, alturaRaquete = 100;
 let tamanhoBola = 20;
 let alvoComputadorY;
 let espessuraBorda = 5;  // Espessura das bordas superior e inferior
-let aumentoVelocidade = 0.2;  // Valor pelo qual a velocidade da bola aumenta a cada impacto com a raquete
+let aumentoVelocidade = 1.0;  // Valor pelo qual a velocidade da bola aumenta a cada impacto com a raquete
 let fundo;  // Variável para a imagem de fundo
+let anguloBola = 0;  // Ângulo atual da bola para rotação
+let velocidadeRotacao = 0;  // Velocidade da rotação
 
 function preload() {
   // Carregar a imagem de fundo antes do setup
@@ -16,7 +18,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(800, 400);
+  createCanvas(1000, 600);
   
   // Posições iniciais das raquetes e da bola
   jogadorY = height / 2 - alturaRaquete / 2;
@@ -39,6 +41,10 @@ function draw() {
   bolaX += velocidadeBolaX;
   bolaY += velocidadeBolaY;
   
+   // Atualizar a velocidade de rotação com base na velocidade da bola
+   let velocidade = sqrt(sq(velocidadeBolaX) + sq(velocidadeBolaY));
+   anguloBola += velocidade * 0.05;  // Ajuste o multiplicador para controlar a rotação
+
   // Verificar colisão da bola com as raquetes
   verificarColisaoRaquetes();
   
@@ -65,8 +71,13 @@ function desenharRaquetes() {
 }
 
 function desenharBola() {
-  // Desenhar a bola
-  image(bolaImg, bolaX - tamanhoBola / 2, bolaY - tamanhoBola / 2, tamanhoBola, tamanhoBola);
+   // Isolar a transformação da bola para não afetar outros elementos
+   push();
+   translate(bolaX, bolaY);  // Mover a origem para o centro da bola
+   rotate(anguloBola);  // Aplicar a rotação
+   imageMode(CENTER);  // Desenhar a partir do centro da imagem
+   image(bolaImg, 0, 0, tamanhoBola, tamanhoBola);
+   pop();  // Restaurar o estado anterior
 }
 
 function desenharBordas() {
@@ -106,25 +117,29 @@ function verificarColisaoRaquetes() {
 
 
 function aumentarVelocidadeBola() {
-  // Aumentar a velocidade da bola após impacto
+  // Aumentar ainda mais a velocidade após o impacto
+  let fatorAumento = 1.5;  // Multiplicador para aumentar mais rapidamente a velocidade
+  
   if (velocidadeBolaX > 0) {
-    velocidadeBolaX += aumentoVelocidade;  // Aumentar a velocidade no eixo X
+    velocidadeBolaX += aumentoVelocidade * fatorAumento;  // Aumentar mais rápido no eixo X
   } else {
-    velocidadeBolaX -= aumentoVelocidade;  // Diminuir para aumentar a velocidade no eixo X negativo
+    velocidadeBolaX -= aumentoVelocidade * fatorAumento;  // Aumentar mais rápido no eixo X negativo
   }
 
   if (velocidadeBolaY > 0) {
-    velocidadeBolaY += aumentoVelocidade;  // Aumentar a velocidade no eixo Y
+    velocidadeBolaY += aumentoVelocidade * fatorAumento;  // Aumentar mais rápido no eixo Y
   } else {
-    velocidadeBolaY -= aumentoVelocidade;  // Diminuir para aumentar a velocidade no eixo Y negativo
+    velocidadeBolaY -= aumentoVelocidade * fatorAumento;  // Aumentar mais rápido no eixo Y negativo
   }
 }
+
 
 function reiniciarBola() {
   bolaX = width / 2;
   bolaY = height / 2;
   velocidadeBolaX = random(3, 5) * (random() > 0.5 ? 1 : -1);
   velocidadeBolaY = random(2, 4) * (random() > 0.5 ? 1 : -1);
+  anguloBola = 0;  // Reiniciar o ângulo da bola
 }
 
 function inteligenciaComputador() {
