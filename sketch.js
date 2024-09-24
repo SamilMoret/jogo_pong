@@ -11,6 +11,12 @@ let velocidadeRotacao = 0;
 let somBounce;
 let placarJogador = 0;
 let placarComputador = 0;
+let jogoIniciado = false;
+
+let botaoIniciar = createButton('Iniciar Jogo');
+botaoIniciar.position(width / 2 - 50, height / 2);
+botaoIniciar.class('start-button'); 
+
 
 function preload() {
   fundo = loadImage('Sprites/fundo2.png');
@@ -21,13 +27,22 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(1000, 600);
+  createCanvas(1300, 800);
   jogadorY = height / 2 - alturaRaquete / 2;
   computadorY = height / 2 - alturaRaquete / 2;
+  let botaoIniciar = createButton('Iniciar Jogo');
+  botaoIniciar.position(width / 2 - 50, height / 2);
+  botaoIniciar.mousePressed(() => {
+  jogoIniciado = true;
+  botaoIniciar.hide();
+  userStartAudio();
   reiniciarBola();
+
+  });
 }
 
 function draw() {
+  if (!jogoIniciado) return;
   background(fundo);
   desenharRaquetes();
   desenharBola();
@@ -115,13 +130,15 @@ function reiniciarBola() {
 }
 
 function inteligenciaComputador() {
-  if (computadorY < alvoComputadorY) {
-    computadorY += 3;
-  } else if (computadorY > alvoComputadorY) {
-    computadorY -= 3;
+    // Aumentar a velocidade do movimento da raquete do computador
+    let velocidadeComputador = 3.5; // Ajuste a velocidade conforme necessário
+    if (computadorY + alturaRaquete / 2 < bolaY) {
+      computadorY += velocidadeComputador;
+    } else if (computadorY + alturaRaquete / 2 > bolaY) {
+      computadorY -= velocidadeComputador;
+    }
+    computadorY = constrain(computadorY, espessuraBorda, height - alturaRaquete - espessuraBorda);
   }
-  computadorY = constrain(computadorY, espessuraBorda, height - alturaRaquete - espessuraBorda);
-}
 
 function narrarPlacar() {
   let narracao = new SpeechSynthesisUtterance(`${placarJogador} a ${placarComputador}`);
