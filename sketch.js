@@ -8,6 +8,8 @@ let aumentoVelocidade = 1.0;  // Valor pelo qual a velocidade da bola aumenta a 
 let fundo;  // Variável para a imagem de fundo
 let anguloBola = 0;  // Ângulo atual da bola para rotação
 let velocidadeRotacao = 0;  // Velocidade da rotação
+let somBounce;  // Variável para o som de bounce
+
 
 function preload() {
   // Carregar a imagem de fundo antes do setup
@@ -15,6 +17,7 @@ function preload() {
   raqueteJogadorImg = loadImage('Sprites/barra02.png');
   raqueteComputadorImg = loadImage('Sprites/barra02.png');
   bolaImg = loadImage('Sprites/bola.png');
+  somBounce = loadSound('Sons/bounce.wav');
 }
 
 function setup() {
@@ -94,10 +97,14 @@ function verificarColisaoRaquetes() {
     velocidadeBolaX *= -1;
 
     let impacto = (bolaY - jogadorY) / alturaRaquete - 0.5; // Calcula o impacto relativo
-
     velocidadeBolaY = impacto * 6;  // Ajusta a velocidade Y com base no ponto de impacto (modifica o ângulo)
-    bolaX = 20 + tamanhoBola / 2;  // Garantir que a bola não fique presa
-    aumentarVelocidadeBola();  // Aumenta a velocidade após o impacto
+    
+    // Ajuste a posição da bola para garantir que não fique presa
+    bolaX = 20 + tamanhoBola / 2;  // Ajuste a posição X da bola
+
+    // Chama a função para aumentar a velocidade e tocar o som
+    aumentarVelocidadeBola();
+    somBounce.play();  // Tocar o som de bounce
     alvoComputadorY = random(espessuraBorda, height - alturaRaquete - espessuraBorda);  // Computador escolhe posição aleatória
   }
   
@@ -106,12 +113,14 @@ function verificarColisaoRaquetes() {
     velocidadeBolaX *= -1;
 
     let impacto = (bolaY - computadorY) / alturaRaquete - 0.5; // Calcula o impacto relativo
-
     velocidadeBolaY = impacto * 6;  // Ajusta a velocidade Y com base no ponto de impacto (modifica o ângulo)
 
-    bolaX = width - 20 - tamanhoBola / 2;  // Garantir que a bola não fique presa
+    // Ajuste a posição da bola para garantir que não fique presa
+    bolaX = width - 20 - tamanhoBola / 2;  // Ajuste a posição X da bola
 
-    aumentarVelocidadeBola();  // Aumenta a velocidade após o impacto
+    // Chama a função para aumentar a velocidade e tocar o som
+    aumentarVelocidadeBola();
+    somBounce.play();  // Tocar o som de bounce
   }
 }
 
