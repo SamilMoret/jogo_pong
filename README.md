@@ -2,6 +2,8 @@
 
 Este projeto faz parte do curso **ChatGPT e JavaScript: construa o jogo Pong** no programa **ONE Oracle + Alura**. O objetivo foi construir um jogo estilo Pong utilizando **ChatGPT** para auxiliar no desenvolvimento e aprimoramento das funcionalidades. Durante o curso, aprendemos sobre manipulação de imagens, sons e interações com o jogador.
 
+![Demonstração do jogo Pong](https://github.com/SamilMoret/jogo_pong/blob/main/Jogo_Pong_Vi.gif)
+
 ## 🚀 Funcionalidades Implementadas:
 - Carregamento de assets de imagem e áudio de forma assíncrona.
 - Implementação de duas raquetes controladas pelo jogador e pelo computador.
